@@ -27,7 +27,7 @@
 			}
 		</style>
 		<script type="text/javascript">
-			var url = "ws://192.168.20.25:9999";
+			var url = "ws://115.28.59.153:9999";
 			var ws = new WebSocket(url);
 			ws.onopen = function(){
 				console.log("success success !!");
@@ -58,7 +58,7 @@
 						$("#sshCommand").val(newContent);
 					}else{
 						var content = $("#sshCommand").val();
-						addStr = "------------------------------->";
+						addStr = "\n------------------------------->";
 						var newContent = content + addStr;
 						$("#sshCommand").val(newContent);
 					}

@@ -31,7 +31,10 @@
 			$this->sockets[] = $this->master;
 			while(true){
 				$reads = $this->sockets;
-				socket_select($reads, $a=null, $b=null, 0);
+				$a = null;
+				$b = null;
+				//socket_select($reads, $a=null, $b=null, 0);
+				socket_select($reads, $a, $b, 0);
 				if(in_array($this->master, $reads)){
 					$client = socket_accept($this->master);
 					$this->sockets[] = $client;
@@ -49,16 +52,18 @@
 						continue;
 					}
 					$message = $this->decode($buffer);
+					echo "\n-------->".$message."<----------\n";
 					$infos = explode("#", $message);
-					$remoteIp = $infos[0];
-					$remoteName = $infos[1];
-					$remotePwdOrCommand = $infos[2];
+					$remoteIp = empty($infos[0]) ? "" : $infos[0];
+					$remoteName = empty($infos[1]) ? "" : $infos[1];
+					$remotePwdOrCommand = empty($infos[2]) ? "" : $infos[2];
+					$this->clientsInfos[$ip][$remoteIp][$remoteName]['isLogin'] = empty($this->clientsInfos[$ip][$remoteIp][$remoteName]['isLogin']) ? false : true;
 					if($this->clientsInfos[$ip][$remoteIp][$remoteName]['isLogin'] == true){
 						$cmd = $remotePwdOrCommand;
 						$connection = $this->clientsInfos[$ip][$remoteIp][$remoteName]['sshConn'];
 						$shell = $this->clientsInfos[$ip][$remoteIp][$remoteName]['shell'];
 						fwrite($shell, $cmd."\n");
-						sleep(0.5);
+						sleep(1);
 						$contentArr = array();
 					    while($line = fgets($shell)) {
 					       	$contentArr[] = $line;
@@ -88,6 +93,10 @@
 			    $content = str_replace("[00m", "", $content);
 			    $content = str_replace("[root@localhost ~]#", "", $content);
 			    $content = str_replace(";root@localhost:~", "", $content);
+			    $content = preg_replace("/\[(.*?)@(.*?)]#/", "", $content);
+			   	$content = preg_replace("/;(.*?)@(.*?):~/", "", $content);
+			   	$content = preg_replace("/\[\d{2};\d{2}m{0,1}/", "", $content);
+			   	$content = str_replace("[0m", "", $content);
 			    $content = str_replace("[m]0", "", $content);
 			    $content = str_replace("]0", "", $content);
 			    $content = str_replace("[00;31", "", $content);
@@ -107,6 +116,7 @@
 			$errorcode = socket_last_error();
 			$errormsg = socket_strerror($errorcode);
 			echo "[$errorcode]".$errormsg."\n";
+			echo "------------------------------\n";
 		}
 		function closeConnect($socket, $ip){
 			$index = array_search($socket, $this->sockets);
@@ -181,5 +191,5 @@
 		}
 	}
 
-	$ip = "192.168.20.25";
+	$ip = "115.28.59.153";
 	$ws = new WS($ip);
