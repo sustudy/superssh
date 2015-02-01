@@ -1,7 +1,7 @@
 <?php
     /*<one line to give the program's name and a brief idea of what it does.>
     该程序可以是浏览器版的ssh。可以用手机，电脑，平板使用浏览器登陆ssh,来操作linux系统。
-    Copyright (C) 2015 - 2016  苏少峰
+    Copyright (C) 2015 - 2016  苏少峰 支辉
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@
 					    while($line = fgets($shell)) {
 					       	$contentArr[] = $line;
 					    }
-					    $this->sendAllMessage($client, $contentArr);
+					    $this->sendAllMessage($client, $contentArr, $cmd);
 					    $this->send($client, "complete");
 					}else if(($this->clientsInfos[$ip][$remoteIp][$remoteName]['isLogin'] == false || empty($this->clientsInfos[$ip][$remoteIp][$remoteName]['isLogin'])) && ($remoteName != "")){
 						$connection = ssh2_connect($remoteIp, 22);
@@ -87,13 +87,15 @@
 				}
 			}		
 		}
-		function sendAllMessage($client, $contentArr){
+		function sendAllMessage($client, $contentArr, $cmd){
 			foreach ($contentArr as $key => $content) {
+				$content = str_replace($cmd, "", $content);
 			   	$content = str_replace("[00;34", "", $content);
 			    $content = str_replace("[00m", "", $content);
-			    $content = str_replace("[root@localhost ~]#", "", $content);
-			    $content = str_replace(";root@localhost:~", "", $content);
-			    $content = preg_replace("/\[(.*?)@(.*?)]#/", "", $content);
+			    //$content = str_replace("[root@localhost ~]#", "", $content);
+			    //$content = str_replace(";root@localhost:~", "", $content);
+			    $content = preg_replace("/\[(.*?)@(.*?)\]#/", "", $content);
+			    $content = preg_replace("/\[(.*?)@(.*?)\]/", "", $content);
 			   	$content = preg_replace("/;(.*?)@(.*?):~/", "", $content);
 			   	$content = preg_replace("/\[\d{2};\d{2}m{0,1}/", "", $content);
 			   	$content = str_replace("[0m", "", $content);
@@ -116,7 +118,7 @@
 			$errorcode = socket_last_error();
 			$errormsg = socket_strerror($errorcode);
 			echo "[$errorcode]".$errormsg."\n";
-			echo "------------------------------\n";
+			echo "-------------||||||||-----------------\n";
 		}
 		function closeConnect($socket, $ip){
 			$index = array_search($socket, $this->sockets);
