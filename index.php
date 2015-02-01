@@ -1,7 +1,7 @@
 <!doctype html>
     <!--<one line to give the program's name and a brief idea of what it does.>
     该程序可以是浏览器版的ssh。可以用手机，电脑，平板使用浏览器登陆ssh,来操作linux系统。
-    Copyright (C) 2015 - 2016  苏少峰
+    Copyright (C) 2015 - 2016  苏少峰 支辉
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
