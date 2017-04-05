@@ -30,7 +30,7 @@
 
 <h4>首次使用superssh需要的步骤</h4>
     1、为php拓展ssh功能
-        可查看教程：http://www.cnblogs.com/sustudy/p/4267843.html
+      
     2、使用php在命令行运行server.php脚本
         php server.php
     3、使用浏览器访问index.php网页
